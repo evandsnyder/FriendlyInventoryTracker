@@ -8,6 +8,6 @@ import com.friendlygeek.fit.service.IService;
 public interface IInventoryService extends IService {
 	void addAsset(Asset newAsset);
 	void updateAsset(Asset updatedAsset);
-	void findAssetById(UUID assetId);
-	void findAssetByName(String assetName);
+	Asset findAssetById(UUID assetId);
+	Asset findAssetByName(String assetName);
 }

@@ -6,8 +6,8 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
 	@Override
 	public boolean authenticateUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		// Using hard coded user information until we add a persistence layer
+		return user.getProfile().getUsername().equals("admin") && user.getProfile().getPassword().equals("abc123");
 	}
 
 }
