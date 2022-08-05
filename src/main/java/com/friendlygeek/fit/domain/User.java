@@ -1,9 +1,14 @@
 package com.friendlygeek.fit.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1771918613826205088L;
 	private UUID id;
 	private Name name;
 	private Profile profile;

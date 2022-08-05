@@ -1,8 +1,13 @@
 package com.friendlygeek.fit.domain;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class UnitOfMeasure {
+public class UnitOfMeasure implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8467861805308579952L;
 	private UUID id;
 	private String unit;
 
@@ -93,7 +98,7 @@ public class UnitOfMeasure {
 
 	@Override
 	public String toString() {
-		return "UnitOfMeasure [unit=" + unit + "]";
+		return unit;
 	}
 
 }

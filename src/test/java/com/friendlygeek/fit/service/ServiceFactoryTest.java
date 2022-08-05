@@ -2,26 +2,33 @@ package com.friendlygeek.fit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.friendlygeek.fit.config.FriendlyConfiguration;
 import com.friendlygeek.fit.service.account.IProfileService;
 import com.friendlygeek.fit.service.account.ProfileServiceImpl;
-import com.friendlygeek.fit.service.exceptions.PropertyFileLoadException;
 import com.friendlygeek.fit.service.exceptions.ServiceLoadException;
 import com.friendlygeek.fit.service.exceptions.ServiceNotFoundException;
 
 class ServiceFactoryTest {
 
-	private ServiceFactory uut = new ServiceFactory();
-
-	@Test
-	void testFailToLoadPropertyFile() {
-		System.setProperty("prop_location", "not-a-valid-location");
-		Exception exception = assertThrows(ServiceLoadException.class, () -> {
-			uut.getService(null);
-		});
-
-		assertTrue(exception.getCause() instanceof PropertyFileLoadException);
+	private static ServiceFactory uut;
+	
+	@BeforeAll
+	public static void SetUp() {
+		// Setup AppConfig
+		FriendlyConfiguration appConfiguration = new FriendlyConfiguration();
+		try {
+		appConfiguration.LoadProperties();
+		} catch (Exception e ) {
+			// That shouldn't happen here...
+			System.exit(-1);
+		}
+		
+		// setup ServiceFactory...
+		uut = new ServiceFactory(appConfiguration);
+		
 	}
 
 	@Test

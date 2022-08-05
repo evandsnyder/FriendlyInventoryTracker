@@ -1,50 +1,46 @@
 package com.friendlygeek.fit.service;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.Properties;
+import java.util.HashMap;
 
-import com.friendlygeek.fit.service.exceptions.PropertyFileLoadException;
+import com.friendlygeek.fit.config.FriendlyConfiguration;
 import com.friendlygeek.fit.service.exceptions.ServiceLoadException;
 import com.friendlygeek.fit.service.exceptions.ServiceNotFoundException;
 
 public class ServiceFactory {
-	private Properties properties;
-	private static final String PROP_LOCATION_ENV = "prop_location";
+	private FriendlyConfiguration appConfiguration;
+	
+	private HashMap<String, IService> loadedServices;
+	
+	
+	public ServiceFactory(FriendlyConfiguration appConfiguration) {
+		this.appConfiguration = appConfiguration;
+		loadedServices = new HashMap<>();
+	}
 
 	public IService getService(String serviceName) throws ServiceLoadException {
+		
+		var knownService = loadedServices.get(serviceName);
+		if(knownService != null) {
+			return knownService;
+		}
 
 		try {
 			String fullyQualifiedImplementationName = getServiceImplementationByName(serviceName);
 
 			IService service;
 			Class<?> clazz = Class.forName(fullyQualifiedImplementationName);
-			Constructor<?> constructor = clazz.getConstructor();
-			service = (IService) constructor.newInstance();
+			Constructor<?> constructor = clazz.getConstructor(FriendlyConfiguration.class);
+			service = (IService) constructor.newInstance(appConfiguration);
+			loadedServices.put(serviceName, service);
 			return service;
-		} catch (PropertyFileLoadException e) {
-			throw new ServiceLoadException("Could not read property file", e);
 		} catch (Exception ex) {
 			throw new ServiceLoadException("Failed to load requested service", ex);
 		}
 	}
 
-	private String getServiceImplementationByName(String n) throws ServiceNotFoundException, PropertyFileLoadException {
-		if (properties == null) {
-			String propFileLocation = System.getProperty(PROP_LOCATION_ENV);
-			properties = new Properties();
-
-			try {
-				FileInputStream propFileStream = new FileInputStream(propFileLocation);
-				properties.load(propFileStream);
-				propFileStream.close();
-			} catch (IOException ex) {
-				throw new PropertyFileLoadException("Could not open property file");
-			}
-		}
-
-		String serviceName = properties.getProperty(n);
+	private String getServiceImplementationByName(String n) throws ServiceNotFoundException {
+		String serviceName = appConfiguration.GetProperty(n);
 		if (serviceName == null)
 			throw new ServiceNotFoundException("Could not find service named: " + n, null);
 		return serviceName;

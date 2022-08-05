@@ -1,9 +1,14 @@
 package com.friendlygeek.fit.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Asset {
+public class Asset implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7458949393424386546L;
 	private UUID id;
 	private String commonName;
 	private String internalId;
@@ -32,6 +37,23 @@ public class Asset {
 		this.internalId = internalId;
 		this.quantity = quantity;
 		this.unitOfMeasure = uom;
+	}
+
+	/**
+	 * Full Constructor
+	 * 
+	 * @param commonName - Name of asset
+	 * @param internalId - Id for inter-organization use
+	 * @param quantity   - how much
+	 * @param uom        - the Unit of Measure describing the quantity
+	 */
+	public Asset(String commonName, String internalId, Long quantity, UnitOfMeasure uom, String description) {
+		id = UUID.randomUUID();
+		this.commonName = commonName;
+		this.internalId = internalId;
+		this.quantity = quantity;
+		this.unitOfMeasure = uom;
+		this.description = description;
 	}
 
 	/**
